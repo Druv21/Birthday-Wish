@@ -1,0 +1,573 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>A Special Surprise for Poonam</title>
+<style>
+:root {
+--bg-color: #1a0508; /* Deep romantic wine red /
+--card-bg: #2d0b11; / Warm velvet rose dark background /
+--accent-color: #ffd700; / Birthday Gold /
+--text-color: #f5e6e8; / Soft cream text /
+--bright-text: #ffffff;
+--heart-color: #ff3366; / Vibrant love pink/red */
+}
+
+body {
+font-family: 'Segoe UI', Georgia, serif;
+background-color: var(--bg-color);
+color: var(--text-color);
+margin: 0;
+padding: 0;
+display: flex;
+justify-content: center;
+align-items: center;
+min-height: 100vh;
+overflow: hidden;
+position: relative;
+user-select: none;
+-webkit-user-select: none;
+perspective: 1000px; /* Enables clean 3D parallax shifts */
+}
+
+/* Ambient Floating Hearts Background */
+#particles-container {
+position: absolute;
+top: 0;
+left: 0;
+width: 100%;
+height: 100%;
+z-index: 1;
+pointer-events: none;
+}
+
+.particle {
+position: absolute;
+color: rgba(255, 51, 102, 0.25);
+font-size: 14px;
+animation: floatUp 6s linear infinite;
+bottom: -20px;
+}
+
+/* Tap Explosion Burst Hearts */
+.burst-heart {
+position: absolute;
+z-index: 9999;
+pointer-events: none;
+color: var(--heart-color);
+font-size: 16px;
+font-family: sans-serif;
+animation: burstOut 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+}
+
+.container {
+width: 90%;
+max-width: 420px;
+text-align: center;
+padding: 20px;
+z-index: 2;
+transition: transform 0.1s ease-out;
+}
+
+/* Screen States */
+.screen {
+display: none;
+background: var(--card-bg);
+padding: 40px 25px;
+border-radius: 20px;
+box-shadow: 0 20px 50px rgba(0,0,0,0.7);
+border: 1px solid rgba(255, 51, 102, 0.2);
+opacity: 0;
+transform: translateY(15px);
+transition: opacity 0.6s ease, transform 0.6s ease;
+}
+
+.screen.active {
+display: block;
+opacity: 1;
+transform: translateY(0);
+}
+
+/* Buttons */
+.btn {
+background-color: transparent;
+border: 2px solid var(--heart-color);
+color: var(--bright-text);
+padding: 12px 30px;
+font-size: 15px;
+border-radius: 25px;
+cursor: pointer;
+transition: all 0.3s ease;
+margin-top: 30px;
+text-transform: uppercase;
+letter-spacing: 1.5px;
+font-weight: bold;
+box-shadow: 0 0 10px rgba(255, 51, 102, 0.2);
+opacity: 0;
+animation: fadeInBtn 0.5s ease 0.6s forwards;
+outline: none;
+}
+
+.btn:hover {
+background-color: var(--heart-color);
+color: var(--bright-text);
+box-shadow: 0 0 20px var(--heart-color);
+transform: translateY(-2px);
+}
+
+/* Screen 1: Cinematic Intro Transitions */
+.intro-text-box {
+min-height: 80px;
+display: flex;
+flex-direction: column;
+justify-content: center;
+align-items: center;
+}
+
+.fade-text {
+font-size: 20px;
+font-weight: 500;
+color: var(--accent-color);
+opacity: 0;
+transition: opacity 0.8s ease;
+position: absolute;
+text-align: center;
+width: 80%;
+}
+
+.sub-welcome {
+margin-top: 20px;
+line-height: 1.6;
+font-size: 16px;
+color: #d4b2b6;
+opacity: 0;
+transition: opacity 0.8s ease;
+}
+
+/* Screen 2: Stylized Name Reveal */
+.reveal-title {
+font-size: 32px;
+font-weight: 800;
+color: var(--bright-text);
+letter-spacing: 1px;
+line-height: 1.4;
+}
+
+/* Screen 3: Love Note */
+.love-text {
+font-size: 17px;
+line-height: 1.7;
+color: #f5e6e8;
+font-style: italic;
+}
+
+/* Screen 4: Luxury Ticket Stub Concept */
+.ticket {
+background: #fff5f6;
+color: #2d0b11;
+border-radius: 15px;
+padding: 35px 25px;
+margin: 15px 0;
+position: relative;
+box-shadow: 0 15px 35px rgba(0,0,0,0.5);
+border-left: 5px dashed var(--card-bg);
+border-right: 5px dashed var(--card-bg);
+}
+
+/* Side Notch Ticket Cutouts */
+.ticket::before, .ticket::after {
+content: '';
+position: absolute;
+top: 50%;
+width: 20px;
+height: 20px;
+background: var(--card-bg);
+border-radius: 50%;
+transform: translateY(-50%);
+}
+.ticket::before { left: -11px; }
+.ticket::after { right: -11px; }
+
+.ticket-header {
+font-size: 12px;
+font-weight: bold;
+text-transform: uppercase;
+letter-spacing: 3px;
+color: #8a6d71;
+border-bottom: 2px dashed #e8cbd0;
+padding-bottom: 15px;
+}
+
+.ticket-body {
+margin: 25px 0 10px 0;
+}
+
+.ticket-title {
+font-size: 26px;
+font-weight: 800;
+color: #2d0b11;
+letter-spacing: 0.5px;
+}
+
+.original-group {
+transition: opacity 0.6s ease, transform 0.6s ease;
+}
+
+/* Shrinks and dims original section after strike out */
+.original-group.dimmed {
+opacity: 0.4;
+transform: scale(0.92);
+}
+
+.ticket-date-label, .celebration-label {
+font-weight: bold;
+color: #8a6d71;
+margin-top: 25px;
+text-transform: uppercase;
+font-size: 11px;
+letter-spacing: 1.5px;
+}
+
+/* Strikethrough Control Setup */
+.strikethrough-wrapper {
+position: relative;
+display: inline-block;
+font-size: 22px;
+font-weight: bold;
+color: #1a0508;
+margin-top: 6px;
+}
+
+.strikethrough-wrapper::after {
+content: '';
+position: absolute;
+left: 0;
+top: 52%;
+width: 0;
+height: 3px;
+background: var(--heart-color);
+box-shadow: 0 0 8px var(--heart-color);
+transition: width 0.8s ease-in-out;
+}
+
+.strikethrough-wrapper.struck::after {
+width: 100%;
+}
+
+/* Timed reveals handled entirely through JS visibility toggling */
+.celebration-group {
+opacity: 0;
+max-height: 0;
+overflow: hidden;
+transition: opacity 0.8s ease, max-height 0.8s ease;
+}
+
+.celebration-group.reveal {
+opacity: 1;
+max-height: 150px;
+}
+
+.celebration-label {
+color: var(--heart-color);
+margin-top: 20px;
+}
+
+.ticket-date-value {
+font-size: 26px;
+font-weight: bold;
+color: #1a0508;
+margin-top: 4px;
+text-shadow: 0 0 1px rgba(0,0,0,0.1);
+}
+
+/* Screen 5: Outro */
+.tbc-text {
+font-size: 28px;
+font-weight: 800;
+letter-spacing: 4px;
+color: var(--accent-color);
+}
+
+/* Custom Popup Overlay modal */
+.popup-overlay {
+display: none;
+position: fixed;
+top: 0;
+left: 0;
+width: 100%;
+height: 100%;
+background: rgba(0, 0, 0, 0.85);
+z-index: 10000;
+justify-content: center;
+align-items: center;
+opacity: 0;
+transition: opacity 0.4s ease;
+}
+
+.popup-overlay.active {
+display: flex;
+opacity: 1;
+}
+
+.popup-card {
+background: var(--card-bg);
+border: 2px solid var(--heart-color);
+border-radius: 20px;
+padding: 40px 25px;
+width: 80%;
+max-width: 325px;
+text-align: center;
+box-shadow: 0 15px 40px rgba(0,0,0,0.9);
+transform: scale(0.8);
+transition: transform 0.4s ease;
+}
+
+.popup-overlay.active .popup-card {
+transform: scale(1);
+}
+
+.popup-text {
+font-size: 17px;
+line-height: 1.6;
+color: var(--bright-text);
+margin: 0;
+}
+
+/* Decorative Hearts icon */
+.heart-icon {
+color: var(--heart-color);
+font-size: 40px;
+margin-bottom: 15px;
+}
+
+/* Keyframes */
+@keyframes floatUp {
+0% { transform: translateY(0) translateX(0) rotate(0deg); opacity: 0; }
+10% { opacity: 1; }
+90% { opacity: 1; }
+100% { transform: translateY(-105vh) translateX(var(--travel-x)) rotate(360deg); opacity: 0; }
+}
+
+@keyframes burstOut {
+0% { transform: translate(-50%, -50%) scale(0.3) translate(0, 0); opacity: 1; }
+100% { transform: translate(-50%, -50%) scale(1) translate(var(--mx), var(--my)); opacity: 0; }
+}
+
+@keyframes fadeInBtn {
+to { opacity: 1; }
+}
+</style>
+</head>
+<body>
+
+<!-- Background Ambient Canvas -->
+<div id="particles-container"></div>
+
+<!-- Custom Target Alert Popup Component (No Close Button - End Slide) -->
+<div id="popupAlert" class="popup-overlay">
+<div class="popup-card" onclick="event.stopPropagation()">
+<div style="font-size: 32px; margin-bottom: 15px;">🎟️</div>
+<div class="popup-text">
+Ticket saved to your heart ❤️<br>Be ready to give me the cutest of your smile that day 💖
+</div>
+</div>
+</div>
+
+<div class="container" id="mainContainer">
+
+<!-- SCREEN 1: THE BIRTHDAY WELCOME -->
+<div id="screen1" class="screen active">
+<div class="heart-icon">❤️</div>
+<div class="intro-text-box">
+<div id="textLine1" class="fade-text" style="opacity: 1;">Today is a very special day...</div>
+<div id="textLine2" class="fade-text">A beautiful moment built just for you...</div>
+</div>
+<p id="welcomePrompt" class="sub-welcome">
+Thinking of you and sending you all my warmth today. A little surprise is waiting for you inside.
+</p>
+<button class="btn" id="openBtn" style="display: none;" onclick="changeScreen(2)">Open</button>
+</div>
+
+<!-- SCREEN 2: CUSTOM NAME REVEAL WITH EMOJIS -->
+<div id="screen2" class="screen">
+<div class="heart-icon">✨</div>
+<div class="reveal-title">
+Happy Birthday POONAM <br>
+<span style="color: var(--accent-color);">My LOVE 💞🎀🫂😘</span>
+</div>
+<button class="btn" onclick="changeScreen(3)">Next</button>
+</div>
+
+<!-- SCREEN 3: SMALL TEXT OF LOVE -->
+<div id="screen3" class="screen">
+<div class="heart-icon">💖</div>
+<div class="love-text">
+"To the girl who makes my world incredibly bright just by being in it. You deserve all the love, peace, and happiness today and every single day. I am so lucky to have you as my strength."
+</div>
+<button class="btn" onclick="changeScreen(4)">Continue</button>
+</div>
+
+<!-- SCREEN 4: THE TICKET REVEAL (TIMED 2.8 SEC TIMELINE) -->
+<div id="screen4" class="screen">
+<div class="ticket">
+<div class="ticket-header">OFFICIAL CELEBRATION PASS</div>
+<div class="ticket-body">
+<div class="ticket-title">Meri POO ka Bday</div>
+
+<div id="originalGroup" class="original-group">
+<div class="ticket-date-label">Original Date</div>
+<div>
+<div id="targetDate" class="strikethrough-wrapper">19 May 2026</div>
+</div>
+</div>
+
+<div id="hiddenGroup" class="celebration-group">
+<div class="celebration-label">Celebration Day</div>
+<div class="ticket-date-value">Coming Soon... 🎬</div>
+</div>
+</div>
+</div>
+<button class="btn" id="ticketNextBtn" style="visibility: hidden;" onclick="changeScreen(5)">Next</button>
+</div>
+
+<!-- SCREEN 5: TO BE CONTINUED & ACTION PROMPT -->
+<div id="screen5" class="screen">
+<div class="tbc-text">TO BE CONTINUED...</div>
+<p style="font-size: 14px; margin-top: 25px; line-height: 1.6; color: #d4b2b6; margin-bottom: 10px;">
+Today is just a tiny preview to keep you smiling. Take care of yourself, and look forward to the celebration day. ❤️
+</p>
+<button class="btn" onclick="openPopup()">Save Ticket Pass</button>
+</div>
+
+</div>
+
+<script>
+// 1. Automatic Text Sequence for Screen 1
+document.addEventListener("DOMContentLoaded", () => {
+const line1 = document.getElementById("textLine1");
+const line2 = document.getElementById("textLine2");
+const prompt = document.getElementById("welcomePrompt");
+const btn = document.getElementById("openBtn");
+
+setTimeout(() => {
+line1.style.opacity = "0";
+setTimeout(() => {
+line2.style.opacity = "1";
+setTimeout(() => {
+line2.style.opacity = "0";
+setTimeout(() => {
+line1.innerText = "Welcome to your birthday teaser...";
+line1.style.opacity = "1";
+prompt.style.opacity = "1";
+btn.style.display = "inline-block";
+}, 800);
+}, 2200);
+}, 800);
+}, 2200);
+
+createHearts();
+
+window.addEventListener('click', (e) => {
+if(e.target.closest('.popup-card')) return;
+triggerFingerBurst(e.clientX, e.clientY);
+});
+
+window.addEventListener('mousemove', (e) => {
+const container = document.getElementById("mainContainer");
+const xAxis = (window.innerWidth / 2 - e.clientX) / 25;
+const yAxis = (window.innerHeight / 2 - e.clientY) / 25;
+container.style.transform = rotateY(${xAxis}deg) rotateX(${yAxis}deg);
+});
+});
+
+// 2. Background Ambient Drift Generator
+function createHearts() {
+const container = document.getElementById("particles-container");
+const heartsArr = ["❤️", "💖", "💕", "🌸"];
+
+setInterval(() => {
+const particle = document.createElement("div");
+particle.className = "particle";
+particle.innerText = heartsArr[Math.floor(Math.random() * heartsArr.length)];
+
+particle.style.left = Math.random() * 100 + "vw";
+particle.style.setProperty('--travel-x', (Math.random() * 100 - 50) + "px");
+particle.style.fontSize = (Math.random() * 12 + 12) + "px";
+particle.style.animationDuration = (Math.random() * 3 + 5) + "s";
+
+container.appendChild(particle);
+setTimeout(() => { particle.remove(); }, 8000);
+}, 600);
+}
+
+// 3. Fingertip Click Heart Burst Engine
+function triggerFingerBurst(x, y) {
+if(!x && !y) return;
+const burstPool = ["❤️", "💖", "💕", "✨"];
+
+for (let i = 0; i < 5; i++) {
+const heart = document.createElement('div');
+heart.className = 'burst-heart';
+heart.innerText = burstPool[Math.floor(Math.random() * burstPool.length)];
+
+heart.style.left = x + 'px';
+heart.style.top = y + 'px';
+
+const angle = Math.random() * Math.PI * 2;
+const distance = Math.random() * 45 + 25;
+const mx = Math.cos(angle) * distance + 'px';
+const my = Math.sin(angle) * distance + 'px';
+
+heart.style.setProperty('--mx', mx);
+heart.style.setProperty('--my', my);
+
+document.body.appendChild(heart);
+setTimeout(() => { heart.remove(); }, 600);
+}
+}
+
+// Handles precise multi-screen logic and custom screen 4 timeline
+function changeScreen(screenNum) {
+document.querySelectorAll('.screen').forEach(screen => {
+screen.classList.remove('active');
+});
+
+const targetScreen = document.getElementById('screen' + screenNum);
+targetScreen.classList.add('active');
+
+// entering screen 4: Optimized precisely to a 2.8s window setup
+if (screenNum === 4) {
+const dateEl = document.getElementById("targetDate");
+const originalGroupEl = document.getElementById("originalGroup");
+const hiddenGroupEl = document.getElementById("hiddenGroup");
+const nextBtn = document.getElementById("ticketNextBtn");
+
+dateEl.classList.remove("struck");
+originalGroupEl.classList.remove("dimmed");
+hiddenGroupEl.classList.remove("reveal");
+nextBtn.style.visibility = "hidden";
+
+// Step 1: Wait exactly 2.8 seconds displaying only the original date layout
+setTimeout(() => {
+// Step 2: Animate line cross strike out
+dateEl.classList.add("struck");
+
+// Step 3: Wait for strike transition to complete, then dim original text and drop below elements
+setTimeout(() => {
+originalGroupEl.classList.add("dimmed");
+hiddenGroupEl.classList.add("reveal");
+nextBtn.style.visibility = "visible";
+}, 800);
+
+}, 2800);
+}
+}
+
+// 4. Custom Overlay Modal Controller Action
+function openPopup() {
+document.getElementById("popupAlert").classList.add("active");
+}
+</script>
+</body>
+</html>
